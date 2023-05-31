@@ -1,13 +1,9 @@
 
 
 
-
-
 # -*- coding: utf-8 -*-
 """
-Created on Fri May 26 13:14:51 2023
 
-@author: OS054
 """
 
 import pandas as pd
@@ -43,7 +39,7 @@ from math import sqrt
 from sklearn.metrics import r2_score
 
 
-os.chdir("C:/Users/OS054/Downloads")
+os.chdir("C:/Users//Downloads")
 nyc_data = pd.read_csv('AB_NYC_2019.csv')
 
 
@@ -172,41 +168,41 @@ nyc_model_x, nyc_model_y = nyc_model.iloc[:,:-1], nyc_model.iloc[:,-1]
 
 
 
-# =============================================================================
-# f, axes = plt.subplots(5, 2, figsize=(15, 20))
-# sns.residplot(nyc_model_x.iloc[:,0],nyc_model_y, lowess=True, ax=axes[0, 0], 
-#                           scatter_kws={'alpha': 0.5}, 
-#                           line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
-# sns.residplot(nyc_model_x.iloc[:,1],nyc_model_y, lowess=True, ax=axes[0, 1],
-#                           scatter_kws={'alpha': 0.5}, 
-#                           line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
-# sns.residplot(nyc_model_x.iloc[:,2],nyc_model_y, lowess=True, ax=axes[1, 0], 
-#                           scatter_kws={'alpha': 0.5}, 
-#                           line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
-# sns.residplot(nyc_model_x.iloc[:,3],nyc_model_y, lowess=True, ax=axes[1, 1], 
-#                           scatter_kws={'alpha': 0.5}, 
-#                           line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
-# sns.residplot(nyc_model_x.iloc[:,4],nyc_model_y, lowess=True, ax=axes[2, 0], 
-#                           scatter_kws={'alpha': 0.5}, 
-#                           line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
-# sns.residplot(nyc_model_x.iloc[:,5],nyc_model_y, lowess=True, ax=axes[2, 1], 
-#                           scatter_kws={'alpha': 0.5}, 
-#                           line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
-# sns.residplot(nyc_model_x.iloc[:,6],nyc_model_y, lowess=True, ax=axes[3, 0], 
-#                           scatter_kws={'alpha': 0.5}, 
-#                           line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
-# sns.residplot(nyc_model_x.iloc[:,7],nyc_model_y, lowess=True, ax=axes[3, 1], 
-#                           scatter_kws={'alpha': 0.5}, 
-#                           line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
-# sns.residplot(nyc_model_x.iloc[:,8],nyc_model_y, lowess=True, ax=axes[4, 0], 
-#                           scatter_kws={'alpha': 0.5}, 
-#                           line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
-# sns.residplot(nyc_model_x.iloc[:,9],nyc_model_y, lowess=True, ax=axes[4, 1], 
-#                           scatter_kws={'alpha': 0.5}, 
-#                           line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
-# plt.setp(axes, yticks=[])
-# plt.tight_layout()
-# =============================================================================
+
+f, axes = plt.subplots(5, 2, figsize=(15, 20))
+sns.residplot(nyc_model_x.iloc[:,0],nyc_model_y, lowess=True, ax=axes[0, 0], 
+                          scatter_kws={'alpha': 0.5}, 
+                           line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
+sns.residplot(nyc_model_x.iloc[:,1],nyc_model_y, lowess=True, ax=axes[0, 1],
+                          scatter_kws={'alpha': 0.5}, 
+                          line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
+sns.residplot(nyc_model_x.iloc[:,2],nyc_model_y, lowess=True, ax=axes[1, 0], 
+                          scatter_kws={'alpha': 0.5}, 
+                          line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
+sns.residplot(nyc_model_x.iloc[:,3],nyc_model_y, lowess=True, ax=axes[1, 1], 
+                         scatter_kws={'alpha': 0.5}, 
+                          line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
+sns.residplot(nyc_model_x.iloc[:,4],nyc_model_y, lowess=True, ax=axes[2, 0], 
+                         scatter_kws={'alpha': 0.5}, 
+                          line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
+sns.residplot(nyc_model_x.iloc[:,5],nyc_model_y, lowess=True, ax=axes[2, 1], 
+                         scatter_kws={'alpha': 0.5}, 
+                          line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
+sns.residplot(nyc_model_x.iloc[:,6],nyc_model_y, lowess=True, ax=axes[3, 0], 
+                          scatter_kws={'alpha': 0.5}, 
+                          line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
+sns.residplot(nyc_model_x.iloc[:,7],nyc_model_y, lowess=True, ax=axes[3, 1], 
+                         scatter_kws={'alpha': 0.5}, 
+                         line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
+sns.residplot(nyc_model_x.iloc[:,8],nyc_model_y, lowess=True, ax=axes[4, 0], 
+                         scatter_kws={'alpha': 0.5}, 
+                         line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
+sns.residplot(nyc_model_x.iloc[:,9],nyc_model_y, lowess=True, ax=axes[4, 1], 
+                         scatter_kws={'alpha': 0.5}, 
+                          line_kws={'color': 'red', 'lw': 1, 'alpha': 0.8})
+plt.setp(axes, yticks=[])
+plt.tight_layout()
+
 
 
 #Eigen vector of a correlation matrix.
