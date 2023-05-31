@@ -1,16 +1,10 @@
 
 
 
-
-
-
 # -*- coding: utf-8 -*-
 """
-Created on Thu May 25 16:49:48 2023
 
-@author: OS054
 """
-
 
 
 
@@ -22,12 +16,12 @@ import matplotlib.image as mpimg
 import seaborn as sns
 import os
 
-###加入這兩條才有辦法讀取線上圖檔
+
 from io import BytesIO   
 from PIL import Image
 
 
-os.chdir("C:/Users/OS054/Downloads")
+os.chdir("C:/Users/..../Downloads")
 
 airbnb=pd.read_csv("AB_NYC_2019.csv")
 
