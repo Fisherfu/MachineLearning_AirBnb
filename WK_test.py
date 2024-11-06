@@ -267,4 +267,48 @@ Y = np.array(Y)
     "Y shape": Y.shape
 }
 
+----
 
+
+Columns in cleaned_data: Index(['測站', '日期', '測項',  nan,  nan,  nan,  nan,  nan,  nan,  nan,  nan,  nan,
+        nan,  nan,  nan,  nan,  nan,  nan,  nan,  nan,  nan,  nan,  nan,  nan,
+        nan,  nan,  nan],
+      dtype='object')
+c:\users\10435\desktop\untitled0.py:87: FutureWarning: The default value of numeric_only in DataFrameGroupBy.mean is deprecated. In a future version, numeric_only will default to False. Either specify numeric_only or select only columns which should be valid for the function.
+  grouped_data = cleaned_data.groupby(['測站', '日期', '測項']).mean().reset_index()
+Traceback (most recent call last):
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\indexes\base.py:3802 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File pandas\_libs\index.pyx:138 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\_libs\index.pyx:165 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\_libs\hashtable_class_helper.pxi:5745 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\_libs\hashtable_class_helper.pxi:5753 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'PM2.5_0'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\spyder_kernels\py3compat.py:356 in compat_exec
+    exec(code, globals, locals)
+
+  File c:\users\10435\desktop\untitled0.py:130
+    Y.append(reshaped_data.iloc[i + sequence_length]['PM2.5_0'])  # Predicting PM2.5 for next hour
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\series.py:981 in __getitem__
+    return self._get_value(key)
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\series.py:1089 in _get_value
+    loc = self.index.get_loc(label)
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\indexes\base.py:3804 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'PM2.5_0'
