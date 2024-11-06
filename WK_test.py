@@ -86,3 +86,34 @@ print({
     "X shape": X.shape,
     "Y shape": Y.shape
 })
+
+----
+
+
+Traceback (most recent call last):
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\spyder_kernels\py3compat.py:356 in compat_exec
+    exec(code, globals, locals)
+
+  File c:\users\10435\desktop\untitled1.py:49
+    cleaned_data = oct_nov_dec_data.apply(fill_invalid_values, axis=1)
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\frame.py:9568 in apply
+    return op.apply().__finalize__(self, method="apply")
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\apply.py:764 in apply
+    return self.apply_standard()
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\apply.py:891 in apply_standard
+    results, res_index = self.apply_series_generator()
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\apply.py:907 in apply_series_generator
+    results[i] = self.f(v)
+
+  File c:\users\10435\desktop\untitled1.py:26 in fill_invalid_values
+    if pd.isna(row.loc[col]) or row.loc[col] == 'NR':  # NR is treated as missing
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\generic.py:1527 in __nonzero__
+    raise ValueError(
+
+ValueError: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
