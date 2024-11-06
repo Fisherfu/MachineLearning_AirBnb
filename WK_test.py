@@ -95,3 +95,21 @@ reshaped_data = cleaned_data.pivot_table(index=['測站', '日期'], columns='�
 # 
 # 
 # =============================================================================
+
+
+reshaped_data.columns
+
+
+# Group the data by '測站' and '日期' and aggregate by taking the mean for each hour
+grouped_data = cleaned_data.groupby(['測站', '日期', '測項']).mean().reset_index()
+
+# Pivot the table to have attributes as rows and hours as columns
+reshaped_data = grouped_data.pivot(index=['測站', '日期'], columns='測項', values=data_columns)
+
+# Flatten the columns for easier access
+reshaped_data.columns = [f'{col[1]}_{col[0]}' for col in reshaped_data.columns]
+
+# Check the reshaped data to confirm structure
+reshaped_data.head()
+
+
