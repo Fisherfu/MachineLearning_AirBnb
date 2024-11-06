@@ -129,3 +129,24 @@ reshaped_data.head()
 
 
 
+
+
+runfile('C:/Users/10435/Desktop/untitled0.py', wdir='C:/Users/10435/Desktop')
+Traceback (most recent call last):
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\spyder_kernels\py3compat.py:356 in compat_exec
+    exec(code, globals, locals)
+
+  File c:\users\10435\desktop\untitled0.py:81
+    grouped_data = cleaned_data.groupby(['測站', '日期', '測項']).mean().reset_index()
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\frame.py:8402 in groupby
+    return DataFrameGroupBy(
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\groupby\groupby.py:965 in __init__
+    grouper, exclusions, obj = get_grouper(
+
+  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\groupby\grouper.py:888 in get_grouper
+    raise KeyError(gpr)
+
+KeyError: '測站'
