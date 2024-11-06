@@ -34,6 +34,30 @@
 
  d. 用測試集資料計算MAE (會有8個結果， 2種X資料 * 2種Y資料 * 2種模型)
 
+----
+
+# Strip extra whitespace from column names
+train_reshaped_df.columns = train_reshaped_df.columns.str.strip()
+
+# Now extract the PM2.5 data for the 6-hour sliding window process
+pm25_data = train_reshaped_df['PM2.5'].values
+
+# Define the length of time window (6 hours) and the target length
+window_size = 6
+target_length = len(pm25_data) - window_size
+
+# Initialize X and Y arrays for the time-series dataset
+X = np.array([pm25_data[i:i + window_size] for i in range(target_length)])
+Y = np.array([pm25_data[i + window_size] for i in range(target_length)])
+
+# Convert X and Y into DataFrames for easier interpretation
+X_df = pd.DataFrame(X, columns=[f'Hour_{i}' for i in range(window_size)])
+Y_df = pd.DataFrame(Y, columns=['PM2.5_Target'])
+
+# Display the cut data to the user
+import ace_tools as tools; tools.display_dataframe_to_user(name="6-Hour Sliding Window X Data", dataframe=X_df)
+tools.display_dataframe_to_user(name="Target Y Data", dataframe=Y_df)
+
 
 ----
 
