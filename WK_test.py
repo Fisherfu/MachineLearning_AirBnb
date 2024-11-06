@@ -269,46 +269,90 @@ Y = np.array(Y)
 
 ----
 
+import pandas as pd
+import numpy as np
 
-Columns in cleaned_data: Index(['測站', '日期', '測項',  nan,  nan,  nan,  nan,  nan,  nan,  nan,  nan,  nan,
-        nan,  nan,  nan,  nan,  nan,  nan,  nan,  nan,  nan,  nan,  nan,  nan,
-        nan,  nan,  nan],
-      dtype='object')
-c:\users\10435\desktop\untitled0.py:87: FutureWarning: The default value of numeric_only in DataFrameGroupBy.mean is deprecated. In a future version, numeric_only will default to False. Either specify numeric_only or select only columns which should be valid for the function.
-  grouped_data = cleaned_data.groupby(['測站', '日期', '測項']).mean().reset_index()
-Traceback (most recent call last):
+# Load the Excel file
+file_path = r'C:\Users\10435\Downloads\_2021.xlsx'
+data = pd.read_excel(file_path, sheet_name='工作表1')
 
-  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\indexes\base.py:3802 in get_loc
-    return self._engine.get_loc(casted_key)
+# Strip all whitespace from column names to ensure consistency
+data.columns = data.columns.str.strip()
 
-  File pandas\_libs\index.pyx:138 in pandas._libs.index.IndexEngine.get_loc
+# Display the first few rows to understand the structure
+data.head()
 
-  File pandas\_libs\index.pyx:165 in pandas._libs.index.IndexEngine.get_loc
+# Convert the date column to datetime format
+data['日期'] = pd.to_datetime(data['日期'], errors='coerce')
 
-  File pandas\_libs\hashtable_class_helper.pxi:5745 in pandas._libs.hashtable.PyObjectHashTable.get_item
+# Filter data for October, November, and December
+oct_nov_dec_data = data[data['日期'].dt.month.isin([10, 11, 12])]
 
-  File pandas\_libs\hashtable_class_helper.pxi:5753 in pandas._libs.hashtable.PyObjectHashTable.get_item
+# Fix column names: Ensure hour columns are properly named (0-23)
+# Assuming the hour columns start from the 4th column
+data_columns = [int(col) if str(col).isdigit() else col for col in data.columns[3:]]
+oct_nov_dec_data.columns = list(data.columns[:3]) + data_columns
 
-KeyError: 'PM2.5_0'
+# Replace missing and invalid values
+def fill_invalid_values(row):
+    for col in data_columns:
+        if pd.isna(row[col]) or row[col] == 'NR':  # NR is treated as missing
+            # Finding previous valid value
+            prev_index = data_columns.index(col) - 1
+            while prev_index >= 0 and (pd.isna(row[data_columns[prev_index]]) or row[data_columns[prev_index]] == 'NR'):
+                prev_index -= 1
+            
+            # Finding next valid value
+            next_index = data_columns.index(col) + 1
+            while next_index < len(data_columns) and (pd.isna(row[data_columns[next_index]]) or row[data_columns[next_index]] == 'NR'):
+                next_index += 1
 
+            # Replace with the average of previous and next valid values
+            if prev_index >= 0 and next_index < len(data_columns):
+                row[col] = (row[data_columns[prev_index]] + row[data_columns[next_index]]) / 2
+            elif prev_index >= 0:
+                row[col] = row[data_columns[prev_index]]
+            elif next_index < len(data_columns):
+                row[col] = row[data_columns[next_index]]
+            else:
+                row[col] = 0  # Default if no valid previous or next value found
+    return row
 
-The above exception was the direct cause of the following exception:
+# Apply the replacement function
+cleaned_data = oct_nov_dec_data.apply(fill_invalid_values, axis=1)
 
-Traceback (most recent call last):
+# Replace remaining 'NR' values with 0
+cleaned_data = cleaned_data.replace('NR', 0)
 
-  File ~\AppData\Local\anaconda3\Lib\site-packages\spyder_kernels\py3compat.py:356 in compat_exec
-    exec(code, globals, locals)
+# Split data into training (October, November) and testing (December) sets
+train_data = cleaned_data[cleaned_data['日期'].dt.month.isin([10, 11])]
+test_data = cleaned_data[cleaned_data['日期'].dt.month == 12]
 
-  File c:\users\10435\desktop\untitled0.py:130
-    Y.append(reshaped_data.iloc[i + sequence_length]['PM2.5_0'])  # Predicting PM2.5 for next hour
+# Reshape data into time-series format
+reshaped_data = cleaned_data.melt(id_vars=['測站', '日期', '測項'], value_vars=data_columns, var_name='hour', value_name='value')
 
-  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\series.py:981 in __getitem__
-    return self._get_value(key)
+# Pivot to get hourly data as columns for each attribute
+reshaped_data = reshaped_data.pivot_table(index=['測站', '日期', 'hour'], columns='測項', values='value').reset_index()
 
-  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\series.py:1089 in _get_value
-    loc = self.index.get_loc(label)
+# Flatten the column names
+reshaped_data.columns = [f"{col}" if isinstance(col, str) else f"{col[1]}" for col in reshaped_data.columns]
 
-  File ~\AppData\Local\anaconda3\Lib\site-packages\pandas\core\indexes\base.py:3804 in get_loc
-    raise KeyError(key) from err
+# Step f: Creating sequences for time series prediction
+sequence_length = 6
+X, Y = [], []
 
-KeyError: 'PM2.5_0'
+for i in range(reshaped_data.shape[0] - sequence_length):
+    # Create sequences for PM2.5 prediction
+    X.append(reshaped_data.iloc[i:i+sequence_length].drop(columns=['測站', '日期', 'hour']).values)
+    Y.append(reshaped_data.iloc[i + sequence_length]['PM2.5'])  # Predicting PM2.5 for the next hour
+
+X = np.array(X)
+Y = np.array(Y)
+
+# Summary of results
+print({
+    "Train data shape": train_data.shape,
+    "Test data shape": test_data.shape,
+    "X shape": X.shape,
+    "Y shape": Y.shape
+})
