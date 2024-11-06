@@ -8,3 +8,10 @@ data = pd.read_excel(file_path, sheet_name=None)
 # Inspecting sheet names to determine the correct one
 sheet_names = data.keys()
 sheet_names
+
+
+# Load the data from the specific sheet
+df = pd.read_excel(file_path, sheet_name='工作表1')
+
+# Display the first few rows to understand the structure
+df.head()
