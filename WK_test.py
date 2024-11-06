@@ -112,4 +112,20 @@ reshaped_data.columns = [f'{col[1]}_{col[0]}' for col in reshaped_data.columns]
 # Check the reshaped data to confirm structure
 reshaped_data.head()
 
+-----
+
+
+# Use only the actual numeric columns for pivoting (as they contain hourly data)
+data_columns_numeric = [col for col in cleaned_data.columns if isinstance(col, int)]
+
+# Pivot the table to have attributes as rows and hours as columns
+reshaped_data = grouped_data.pivot(index=['測站', '日期'], columns='測項', values=data_columns_numeric)
+
+# Flatten the columns for easier access
+reshaped_data.columns = [f'{col[1]}_{col[0]}' for col in reshaped_data.columns]
+
+# Check the reshaped data to confirm structure
+reshaped_data.head()
+
+
 
