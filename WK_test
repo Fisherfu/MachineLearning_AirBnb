@@ -15,3 +15,69 @@ df = pd.read_excel(file_path, sheet_name='工作表1')
 
 # Display the first few rows to understand the structure
 df.head()
+
+
+
+# Step a: Extract data for October, November, and December (10, 11, 12 months)
+# Filtering based on the date column for months 10, 11, 12
+df['日期'] = pd.to_datetime(df['日期'], errors='coerce')
+oct_nov_dec_data = df[df['日期'].dt.month.isin([10, 11, 12])]
+
+# Step b: Replace missing and invalid values with average of previous and next hours
+# Loop through each row and replace NaNs or invalid data (assuming they are NaNs here)
+def fill_invalid_values(row):
+    for i in range(3, 27):  # The data columns are from index 3 to 26
+        if pd.isna(row[i]) or row[i] == 'NR':  # NR is treated as missing
+            # Finding previous valid value
+            prev_index = i - 1
+            while prev_index >= 3 and (pd.isna(row[prev_index]) or row[prev_index] == 'NR'):
+                prev_index -= 1
+            
+            # Finding next valid value
+            next_index = i + 1
+            while next_index < 27 and (pd.isna(row[next_index]) or row[next_index] == 'NR'):
+                next_index += 1
+
+            # Replace with the average of previous and next valid values
+            if prev_index >= 3 and next_index < 27:
+                row[i] = (row[prev_index] + row[next_index]) / 2
+            elif prev_index >= 3:
+                row[i] = row[prev_index]
+            elif next_index < 27:
+                row[i] = row[next_index]
+            else:
+                row[i] = 0  # Default if no valid previous or next value found
+    return row
+
+# Apply the replacement function
+cleaned_data = oct_nov_dec_data.apply(fill_invalid_values, axis=1)
+
+# Step c: Replace 'NR' values with 0
+cleaned_data = cleaned_data.replace('NR', 0)
+
+# Step d: Split the data into training set (October, November) and test set (December)
+train_data = cleaned_data[cleaned_data['日期'].dt.month.isin([10, 11])]
+test_data = cleaned_data[cleaned_data['日期'].dt.month == 12]
+
+# Step e: Reshape data into time-series format
+reshaped_data = cleaned_data.pivot_table(index=['測站', '日期'], columns='測項', values=[i for i in range(24)])
+reshaped_data.columns = [f'{col[1]}_{col[0]}' for col in reshaped_data.columns]  # Flatten the multi-index columns
+
+# Step f: Creating sequences for time series prediction
+sequence_length = 6
+X, Y = [], []
+
+for i in range(reshaped_data.shape[0] - sequence_length):
+    X.append(reshaped_data.iloc[i:i+sequence_length].values)
+    Y.append(reshaped_data.iloc[i + sequence_length]['PM2.5_0'])  # Predicting PM2.5 for next hour
+
+X = np.array(X)
+Y = np.array(Y)
+
+# Summary of results
+{
+    "Train data shape": train_data.shape,
+    "Test data shape": test_data.shape,
+    "X shape": X.shape,
+    "Y shape": Y.shape
+}
